@@ -47,11 +47,18 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Flutter Engaged Extended Korea\n(Image Album)'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+        body: Column(
+          children: [
+            ListTile(
+              title: const Text('1. Image album by new screen'),
+              onTap: () {
+                FlutterEngaged2021.showImageAlbum();
+              },
+            )
+          ],
+        )
       ),
     );
   }
