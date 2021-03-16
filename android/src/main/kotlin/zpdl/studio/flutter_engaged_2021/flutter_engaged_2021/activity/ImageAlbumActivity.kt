@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -38,7 +37,6 @@ class ImageAlbumActivity: Activity() {
             CoroutineScope(Dispatchers.Main).launch {
                 var images = mutableListOf<PluginImage>()
                 CoroutineScope(Dispatchers.Default).async {
-                    // background thread
                     images = ImageQuery.getImages(this@ImageAlbumActivity)
                 }.await()
 

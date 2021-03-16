@@ -4,9 +4,12 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Size
+import androidx.core.graphics.BitmapCompat
+import java.nio.ByteBuffer
 
 class ImageQuery {
     companion object {
@@ -17,17 +20,16 @@ class ImageQuery {
                             MediaStore.Images.Media._ID,
                             MediaStore.Images.Media.DISPLAY_NAME
                     ),
-                    null,
-//                    Bundle().apply {
-//                        putStringArray(
-//                                ContentResolver.QUERY_ARG_SORT_COLUMNS,
-//                                arrayOf(MediaStore.Images.Media.DATE_MODIFIED)
-//                        )
-//                        putInt(
-//                                ContentResolver.QUERY_ARG_SORT_DIRECTION,
-//                                ContentResolver.QUERY_SORT_DIRECTION_DESCENDING
-//                        )
-//                    },
+                    Bundle().apply {
+                        putStringArray(
+                                ContentResolver.QUERY_ARG_SORT_COLUMNS,
+                                arrayOf(MediaStore.Images.Media.DATE_MODIFIED)
+                        )
+                        putInt(
+                                ContentResolver.QUERY_ARG_SORT_DIRECTION,
+                                ContentResolver.QUERY_SORT_DIRECTION_DESCENDING
+                        )
+                    },
                     null
             )
             val results = mutableListOf<PluginImage>()
@@ -76,4 +78,50 @@ data class PluginImage(
             "id" to id,
             "displayName" to displayName
     )
+}
+
+data class PluginBitmap(
+        val width: Int,
+        val height: Int,
+        val buffer: ByteBuffer
+) {
+    fun toMap(): Map<String, *> = hashMapOf(
+            "width" to width,
+            "height" to height,
+            "buffer" to buffer.array()
+    )
+
+    companion object {
+        @Suppress("MemberVisibilityCanBePrivate")
+        fun create(bitmap: Bitmap): PluginBitmap {
+            val byteCount = BitmapCompat.getAllocationByteCount(bitmap)
+            val buffer: ByteBuffer = ByteBuffer.allocate(byteCount)
+            bitmap.copyPixelsToBuffer(buffer)
+
+            return PluginBitmap(
+                    bitmap.width,
+                    bitmap.height,
+                    buffer)
+        }
+
+        fun createARGB(bitmap: Bitmap): PluginBitmap {
+            val pluginBitmap: PluginBitmap
+
+            if(bitmap.config == Bitmap.Config.ARGB_8888) {
+                pluginBitmap = create(bitmap)
+            } else {
+                val src = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(src)
+                canvas.drawBitmap(
+                        bitmap,
+                        0f,
+                        0f,
+                        null
+                )
+                pluginBitmap = create(src)
+                src.recycle()
+            }
+            return pluginBitmap
+        }
+    }
 }
