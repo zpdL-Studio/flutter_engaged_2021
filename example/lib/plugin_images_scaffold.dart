@@ -1,11 +1,7 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
 
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_engaged_2021/data/plugin_image.dart';
 import 'package:flutter_engaged_2021/flutter_engaged_2021.dart';
-import 'package:flutter_engaged_2021/platform_view/platform_view_plugin.dart';
-import 'package:flutter_engaged_2021/platform_view/platform_view_widget.dart';
 import 'package:flutter_engaged_2021/widget/plugin_thumbnail_widget.dart';
 import 'package:flutter_engaged_2021_example/plugin_image_view_scaffold.dart';
 
@@ -62,6 +58,63 @@ class _PluginImagesScaffoldState extends State<PluginImagesScaffold> {
             },
           ),
         )
+    );
+  }
+}
+
+class PluginImagesRow extends StatefulWidget {
+  @override
+  _PluginImagesRowState createState() => _PluginImagesRowState();
+}
+
+class _PluginImagesRowState extends State<PluginImagesRow> {
+
+  List<PluginImage>? _list;
+
+  @override
+  void initState() {
+    super.initState();
+    FlutterEngaged2021.getImages().then((value) {
+      if(mounted) {
+        setState(() {
+          _list = value;
+        });
+      } else {
+        _list = value;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      width: double.infinity,
+      height: 120,
+      color: Colors.blue,
+      child: ListView.builder(
+        itemCount: _list?.length ?? 0,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (BuildContext context, int index) {
+          final item = _list?[index];
+          if(item != null) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: Material(
+                    child: InkWell(child: PluginThumbnailWidget(image: item), onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => PluginImageViewScaffold(pluginImage: item)));
+                    },)),
+              ),
+            );
+          } else {
+            return Container();
+          }
+        },
+      ),
     );
   }
 }

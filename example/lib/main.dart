@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
                     title: const Text('2. Image album'),
                     subtitle: const Text('by platform view'),
                     trailing: IconButton(
-                      icon: const Icon(Icons.add),
+                      icon: Icon(_byPlatformView ? Icons.remove : Icons.add),
                       onPressed: () {
                         setState(() {
                           _byPlatformView = !_byPlatformView;
@@ -53,11 +53,17 @@ class _MyAppState extends State<MyApp> {
                           MaterialPageRoute(builder: (context) => PlatformViewScaffold()));
                     },
                   ),
+                  if(_byPlatformView)
+                    Container(
+                      height: 240,
+                      color: Colors.cyan,
+                      child: PlatformWidget(),
+                    ),
                   ListTile(
                     title: const Text('2. Image album'),
                     subtitle: const Text('by plugin images'),
                     trailing: IconButton(
-                      icon: const Icon(Icons.add),
+                      icon: Icon(_byPluginImages ? Icons.remove : Icons.add),
                       onPressed: () {
                         setState(() {
                           _byPluginImages = !_byPluginImages;
@@ -70,6 +76,8 @@ class _MyAppState extends State<MyApp> {
                           MaterialPageRoute(builder: (context) => PluginImagesScaffold()));
                     },
                   ),
+                  if(_byPluginImages)
+                    PluginImagesRow()
                 ],
               );
             },
