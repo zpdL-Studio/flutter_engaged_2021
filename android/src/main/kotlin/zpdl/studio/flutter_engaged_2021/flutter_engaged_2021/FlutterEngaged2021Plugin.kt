@@ -57,7 +57,7 @@ class FlutterEngaged2021Plugin: FlutterPlugin, MethodCallHandler, ActivityAware 
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when(Method.from(call.method)) {
-      Method.GET_IMAGE_FOLDER -> {
+      Method.SHOW_IMAGE_ALBUM -> {
         activityPluginBinding?.activity?.let {
           it.startActivity(Intent(it, ImageAlbumActivity::class.java))
         }
@@ -129,7 +129,7 @@ class FlutterEngaged2021Plugin: FlutterPlugin, MethodCallHandler, ActivityAware 
 }
 
 enum class Method(val method: String) {
-  GET_IMAGE_FOLDER("${FlutterEngaged2021Plugin.CHANNEL}/SHOW_IMAGE_ALBUM"),
+  SHOW_IMAGE_ALBUM("${FlutterEngaged2021Plugin.CHANNEL}/SHOW_IMAGE_ALBUM"),
   GET_IMAGES("${FlutterEngaged2021Plugin.CHANNEL}/GET_IMAGES"),
   READ_IMAGE_BYTES("${FlutterEngaged2021Plugin.CHANNEL}/READ_IMAGE_BYTES"),
   GET_THUMBNAIL_BITMAP("${FlutterEngaged2021Plugin.CHANNEL}/GET_THUMBNAIL_BITMAP"),
